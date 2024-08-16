@@ -6,15 +6,24 @@ function App() {
   const [grid, setGrid] = useState(Array(9).fill(Array(9).fill('')));
 
   const handleSolve = async () => {
-    const response = await fetch('http://localhost:3001/solve', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ grid }),
-    });
-    const data = await response.json();
-    setGrid(data.solvedGrid);
+    try {
+      const response = await fetch('http://localhost:3001/solve', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ grid }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data = await response.json();
+      setGrid(data.solvedGrid);
+    } catch (error) {
+      console.error('Failed to fetch:', error);
+    }
   };
 
   return (
